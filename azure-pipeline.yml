@@ -1,0 +1,29 @@
+# azure-pipelines.yml
+trigger:
+- main # Trigger the pipeline whenever changes are pushed to the 'main' branch
+
+pool:
+  vmImage: 'ubuntu-latest' # Use the latest Ubuntu image for the build agent
+
+steps:
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.x'
+  inputs:
+    versionSpec: '3.x' # Specify that we want to use any 3.x version of Python
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    python helloworld.py
+  displayName: 'Run Python Script'
+  # You could add more steps here, like running tests,
+  # if this were a more complex project.
+
+- publish: $(System.DefaultWorkingDirectory)
+  artifact: drop
+  displayName: 'Publish Artifact'
+  # This step publishes the entire working directory as an artifact named 'drop'.
+  # In a real project, you might publish only the necessary build outputs.
